@@ -4,8 +4,8 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     This service utilizes Bottle and Requests to form a shim layer 
-    translating Slack Slash Command out-going webhooks into Icinga 
-    Problem Acknowledgement API calls. Primarily so that admines may
+    translating Slack slash command out-going webhooks into Icinga2 
+    Problem Acknowledgement API calls. Primarily so that admins may
     acknowledge issues remotely without requiring them to first fully 
     authenticate to the Icinga web client.
 """
@@ -28,7 +28,7 @@ ICINGA_HOST = os.getenv('ICINGA_HOST', 'https://localhost:5665')
 ICINGA_USER = os.getenv('ICINGA_USER', 'root')
 ICINGA_PASS = os.getenv('ICINGA_PASS', '')
 SLACK_API_TOKEN = os.getenv('SLACK_API_TOKEN', '')
-LOGGING_PATH = os.getenv('LOGGING_PATH', '/var/log/icinga/slack_ack_translator.log')
+LOGGING_PATH = os.getenv('LOGGING_PATH', '/var/log/icinga2/slack_ack_translator.log')
 
 app = bottle.Bottle()
 logging.basicConfig(
@@ -48,7 +48,7 @@ def icinga_middleware_handler():
     # Check for the Slack API Token
     if bottle.request.forms.get('token','') != SLACK_API_TOKEN:
         logging.warning('%s - Invalid Slack API Token.', addr)
-        bottle.abort('403', 'Invalid Slack API Token.')
+        bottle.abort(403, 'Invalid Slack API Token.')
     
     # Parse the command and determine the host or service to target
     if len(cmd) == 3:
